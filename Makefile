@@ -20,7 +20,6 @@ install:
 	@$(UV) venv $(VENV_DIR)
 	@$(UV) pip install --upgrade pip --quiet
 	@$(UV) pip install $(DEPS) --quiet
-	@$(UV) pip install src/assets/mlx-2.2-py3-none-any.whl --quiet
 	@$(UV) pip install flake8 mypy --quiet
 	@touch $(DEPSFLAG)
 	@echo "Everything has been installed."
