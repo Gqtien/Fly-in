@@ -1,5 +1,5 @@
-from models import MapData
 import arcade
 
 
-class Renderer(arcade.View): ...
+class Renderer(arcade.View):
+    ...

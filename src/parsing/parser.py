@@ -38,7 +38,9 @@ class Parser:
                     elif parts[0] == "end_hub":
                         end_hub = hub.name
                 elif parts[0] == "connection":
-                    connections.append(self._parse_connection(parts[1].strip()))
+                    connections.append(
+                        self._parse_connection(parts[1].strip())
+                    )
                 else:
                     raise ValueError(f"Unknown entity type: {parts[0]}")
             except Exception as e:
@@ -73,7 +75,11 @@ class Parser:
                 y=int(parts[2].strip()),
                 type=metadata.get("zone", ZoneType.NORMAL),
                 color=metadata.get("color", None),
-                max_drones = int(metadata["max_drones"]) if metadata.get("max_drones") is not None else None
+                max_drones=(
+                    int(metadata["max_drones"])
+                    if metadata.get("max_drones") is not None
+                    else None
+                )
             )
             if "-" in hub.name:
                 raise ValueError(f"Invalid hub name: {hub.name}")
@@ -90,7 +96,11 @@ class Parser:
             return Connection(
                 from_hub=parts[0].strip().split("-")[0],
                 to_hub=parts[0].strip().split("-")[1],
-                max_link_capacity=int(metadata["max_link_capacity"]) if metadata.get("max_link_capacity") is not None else None
+                max_link_capacity=(
+                    int(metadata["max_link_capacity"])
+                    if metadata.get("max_link_capacity") is not None
+                    else None
+                )
             )
         except Exception as e:
             raise ValueError(f"Invalid connection data: {data}") from e
@@ -100,5 +110,6 @@ class Parser:
         if not data:
             return {}
         return {
-            k: v for k, v in (item.split("=") for item in data.strip("[]").split(" "))
+            k: v for k, v in
+            (item.split("=") for item in data.strip("[]").split(" "))
         }
