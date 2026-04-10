@@ -17,7 +17,7 @@ class Validator:
 
     @staticmethod
     def validate_hubs(hubs: dict[str, Hub]) -> None:
-        seen_coords = {}
+        seen_coords: dict[tuple[int, int], str] = {}
 
         for name, hub in hubs.items():
             coord = (hub.x, hub.y)
@@ -43,7 +43,10 @@ class Validator:
         seen = set()
 
         for conn in connections:
-            if conn.from_hub not in valid_hubs or conn.to_hub not in valid_hubs:
+            if (
+                conn.from_hub not in valid_hubs
+                or conn.to_hub not in valid_hubs
+            ):
                 raise ValueError(f"Invalid connection (unknown hub): {conn}")
 
             if conn.from_hub == conn.to_hub:
@@ -57,12 +60,15 @@ class Validator:
             seen.add(key)
 
         for conn in connections:
-            if conn.max_link_capacity is not None and conn.max_link_capacity <= 0:
+            if (
+                conn.max_link_capacity is not None
+                and conn.max_link_capacity <= 0
+            ):
                 raise ValueError(f"Invalid capacity in connection {conn}")
 
     @staticmethod
     def validate_file_path(file_path: str) -> None:
-        if file_path == "" or file_path == ():
+        if not file_path:
             raise FileNotFoundError("No file selected")
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"File not found: {file_path}")

@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, cast
 import arcade
 from arcade.types import Color
 from models import Connection, Hub, MapData, ZoneType
@@ -110,7 +110,9 @@ class Parser:
             return {}
 
         return dict(
-            item.split("=", 1) for item in data.strip("[]").split() if "=" in item
+            item.split("=", 1)
+            for item in data.strip("[]").split()
+            if "=" in item
         )
 
     @staticmethod
@@ -122,7 +124,7 @@ class Parser:
         if not name:
             return arcade.color.WHITE
         try:
-            return getattr(arcade.color, name.upper())
+            return cast(Color, getattr(arcade.color, name.upper()))
         except AttributeError:
             return arcade.color.WHITE
 
