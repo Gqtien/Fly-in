@@ -1,6 +1,9 @@
 from typing import Any
+import arcade
+from arcade.types import Color
 from models import Connection, Hub, MapData, ZoneType
 from .validator import Validator
+
 
 class Parser:
     def parse(self, path: str) -> MapData:
@@ -9,7 +12,7 @@ class Parser:
         lines = self._flatten(lines)
         data = self._parse_entities(lines)
         Validator().validate(data)
-        return data 
+        return data
 
     @staticmethod
     def _flatten(lines: list[str]) -> list[str]:
@@ -79,8 +82,8 @@ class Parser:
                 name=name,
                 x=int(x),
                 y=int(y),
-                type=metadata.get("zone", ZoneType.NORMAL),
-                color=metadata.get("color"),
+                type=self._parse_zone_t(metadata.get("zone")),
+                color=self._parse_color(metadata.get("color")),
                 max_drones=self._to_int(metadata.get("max_drones")),
             )
         except Exception as e:
@@ -105,13 +108,29 @@ class Parser:
     def _parse_metadata(data: str) -> dict[str, Any]:
         if not data:
             return {}
-    
+
         return dict(
-            item.split("=", 1)
-            for item in data.strip("[]").split()
-            if "=" in item
+            item.split("=", 1) for item in data.strip("[]").split() if "=" in item
         )
 
     @staticmethod
-    def _to_int(value):
+    def _to_int(value: str | None) -> int | None:
         return int(value) if value else None
+
+    @staticmethod
+    def _parse_color(name: str | None) -> Color:
+        if not name:
+            return arcade.color.WHITE
+        try:
+            return getattr(arcade.color, name.upper())
+        except AttributeError:
+            return arcade.color.WHITE
+
+    @staticmethod
+    def _parse_zone_t(name: str | None) -> ZoneType:
+        if not name:
+            return ZoneType.NORMAL
+        try:
+            return ZoneType[name.upper()]
+        except KeyError:
+            return ZoneType.NORMAL

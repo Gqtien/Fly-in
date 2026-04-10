@@ -1,6 +1,6 @@
 from dataclasses import dataclass
-from .color import Color
 from .zone import ZoneType
+from arcade.types import Color
 
 
 @dataclass
@@ -9,5 +9,5 @@ class Hub:
     x: int
     y: int
     type: ZoneType
-    color: Color | None
+    color: Color
     max_drones: int | None

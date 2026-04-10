@@ -1,6 +1,7 @@
 import os
 from tkinter import filedialog
 from parsing import Parser, Validator
+from visualization import Viewer
 
 
 class Main:
@@ -20,9 +21,13 @@ class Main:
 
         self.run()
 
-    def run(self) -> None: ...
+    def run(self) -> None:
+        try:
+            Viewer(self.data)
+        except Exception as e:
+            print(f"Error displaying map: {e}")
+            exit(1)
 
 
 if __name__ == "__main__":
-    main = Main()
-    print(main.data)
+    Main()
