@@ -45,7 +45,7 @@ class Renderer(arcade.View):
         for hub in self.data.hubs.values():
             x, y = self._pos(hub)
 
-            clr = ZONE_COLORS.get(hub.type.name, ZONE_COLORS["NORMAL"])["MAIN"]
+            clr, act = ZONE_COLORS.get(hub.type.name, ZONE_COLORS["NORMAL"])
 
             arcade.draw_circle_filled(x, y, HUB_RADIUS, clr)
             arcade.draw_circle_outline(x, y, HUB_RADIUS, hub.color, 3)

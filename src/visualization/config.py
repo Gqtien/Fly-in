@@ -10,20 +10,8 @@ ZOOM_FACTOR = 1.1
 BG_COLOR = arcade.color.QUARTZ
 
 ZONE_COLORS = {
-    "NORMAL": {
-        "MAIN": arcade.color.WHITE,
-        "ACCENT": arcade.color.BLACK,
-    },
-    "PRIORITY": {
-        "MAIN": arcade.color.GREEN,
-        "ACCENT": arcade.color.WHITE,
-    },
-    "RESTRICTED": {
-        "MAIN": arcade.color.RED,
-        "ACCENT": arcade.color.WHITE,
-    },
-    "BLOCKED": {
-        "MAIN": arcade.color.BLACK,
-        "ACCENT": arcade.color.WHITE,
-    },
+    "NORMAL": (arcade.color.WHITE, arcade.color.BLACK),
+    "PRIORITY": (arcade.color.GREEN, arcade.color.WHITE),
+    "RESTRICTED": (arcade.color.RED, arcade.color.WHITE),
+    "BLOCKED": (arcade.color.BLACK, arcade.color.WHITE),
 }
