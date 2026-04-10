@@ -9,21 +9,8 @@ DEPS		:= arcade
 DEPSFLAG	:= $(VENV_DIR)/.installed
 
 run:
-	@if [ ! -x "$(BIN)/python" -o ! -x "$(BIN)/pip" ]; then \
-	    echo "Virtual environment not found. Installing..."; \
-	    $(MAKE) install > /dev/null 2>&1; \
-	fi
-	@if [ ! -f "$(DEPSFLAG)" ]; then \
-	    echo "Checking dependencies..."; \
-	    missing=$$(for pkg in $(DEPS) mlx; do \
-	        $(BIN)/pip list --format=freeze | grep -i "^$${pkg}==" >/dev/null || echo $$pkg; \
-	    done); \
-	    if [ -n "$$missing" ]; then \
-	        echo "Missing dependencies. Installing..."; \
-	        $(MAKE) install > /dev/null 2>&1; \
-	    fi; \
-	fi
-	@$(BIN)/$(PYTHON) src/fly_in.py $(ARGS) || true
+	$(ensure_env)
+	@$(BIN)/$(PYTHON) src/fly_in.py || true
 
 install:
 	@$(MAKE) clean
@@ -35,7 +22,9 @@ install:
 	@echo "Everything has been installed."
 	@echo "You can now run 'make'"
 
-# implement internal debug
+debug:
+	$(ensure_env)
+	@$(BIN)/$(PYTHON) src/fly_in.py --debug || true
 
 clean:
 	@rm -rf $(VENV_DIR)
@@ -45,11 +34,30 @@ clean:
 	@rm -f profile.prof $(DEPSFLAG)
 
 lint:
+	$(ensure_env)
 	@$(BIN)/$(PYTHON) -m flake8 src || true
 	@$(BIN)/$(PYTHON) -m mypy src --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs || true
 
 lint-strict:
+	$(ensure_env)
 	@$(BIN)/$(PYTHON) -m flake8 src || true
 	@$(BIN)/$(PYTHON) -m mypy src --strict || true
 
-.PHONY: run install clean lint lint-strict
+define ensure_env
+	@if [ ! -x "$(BIN)/python" -o ! -x "$(BIN)/pip" ]; then \
+	    echo "Virtual environment not found. Installing..."; \
+	    $(MAKE) install > /dev/null 2>&1; \
+	fi
+	@if [ ! -f "$(DEPSFLAG)" ]; then \
+	    echo "Checking dependencies..."; \
+	    missing=$$(for pkg in $(DEPS) mlx; do \
+	        $(BIN)/pip list --format=freeze | grep -i "^$${pkg}==" >/dev/null || echo $$pkg; \
+	    done); \
+	    if [ -n "$$missing" ]; then \
+	        echo "Missing dependencies: $$missing. Installing..."; \
+	        $(MAKE) install > /dev/null 2>&1; \
+	    fi; \
+	fi
+endef
+
+.PHONY: run install debug clean lint lint-strict

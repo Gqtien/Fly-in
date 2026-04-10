@@ -1,7 +1,8 @@
 import arcade
-from .renderer import Renderer
-from .config import WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE
+
 from models import MapData
+from .config import WINDOW_HEIGHT, WINDOW_TITLE, WINDOW_WIDTH
+from .renderer import Renderer
 
 
 class Viewer:
