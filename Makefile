@@ -8,23 +8,6 @@ MAKEFLAGS	:= --no-print-directory
 DEPS		:= arcade
 DEPSFLAG	:= $(VENV_DIR)/.installed
 
-usage:
-	@echo "Usage: make <command>"
-	@echo ""
-	@echo "Commands:"
-	@$(foreach cmd,$(filter-out usage,$(CMDS)), \
-		echo "  - $(cmd)"
-
-install:
-	@$(MAKE) clean
-	@$(UV) venv $(VENV_DIR)
-	@$(UV) pip install --upgrade pip --quiet
-	@$(UV) pip install $(DEPS) --quiet
-	@$(UV) pip install flake8 mypy --quiet
-	@touch $(DEPSFLAG)
-	@echo "Everything has been installed."
-	@echo "You can now run 'make run'"
-
 run:
 	@if [ ! -x "$(BIN)/python" -o ! -x "$(BIN)/pip" ]; then \
 	    echo "Virtual environment not found. Installing..."; \
@@ -42,9 +25,20 @@ run:
 	fi
 	@$(BIN)/$(PYTHON) src/fly_in.py $(ARGS) || true
 
+install:
+	@$(MAKE) clean
+	@$(UV) venv $(VENV_DIR)
+	@$(UV) pip install --upgrade pip --quiet
+	@$(UV) pip install $(DEPS) --quiet
+	@$(UV) pip install flake8 mypy --quiet
+	@touch $(DEPSFLAG)
+	@echo "Everything has been installed."
+	@echo "You can now run 'make'"
+
 # implement internal debug
 
 clean:
+	@rm -rf $(VENV_DIR)
 	@find . -type d -name "__pycache__" -exec rm -rf {} +
 	@find . -type d -name ".mypy_cache" -exec rm -rf {} +
 	@find . -type d -name ".pytest_cache" -exec rm -rf {} +
@@ -58,7 +52,4 @@ lint-strict:
 	@$(BIN)/$(PYTHON) -m flake8 src || true
 	@$(BIN)/$(PYTHON) -m mypy src --strict || true
 
-$(ARGS):
-	@:
-
-.PHONY: usage install run profile debug clean lint lint-strict
+.PHONY: run install clean lint lint-strict
