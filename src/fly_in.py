@@ -1,6 +1,6 @@
 import os
 from tkinter import filedialog
-from parsing import Parser
+from parsing import Parser, Validator
 
 
 class Main:
@@ -10,7 +10,15 @@ class Main:
             initialdir=f"{os.getcwd()}/assets/maps",
             filetypes=[("Maps", "*.txt")],
         )
-        self.data = Parser().parse(self.file_path)
+
+        try:
+            Validator().validate_file_path(self.file_path)
+            self.data = Parser().parse(self.file_path)
+        except Exception as e:
+            print(f"Error parsing map: {e}")
+            exit(1)
+
+        self.run()
 
     def run(self) -> None: ...
 

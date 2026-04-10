@@ -1,22 +1,24 @@
 from typing import Any
 from models import Connection, Hub, MapData, ZoneType
-
+from .validator import Validator
 
 class Parser:
     def parse(self, path: str) -> MapData:
         with open(path, "r") as f:
             lines = f.readlines()
         lines = self._flatten(lines)
-        return self._parse_entities(lines)
+        data = self._parse_entities(lines)
+        Validator().validate(data)
+        return data 
 
     @staticmethod
     def _flatten(lines: list[str]) -> list[str]:
-        cleaned = []
+        flat = []
         for line in lines:
-            line = line.strip()
-            if line and not line.startswith("#"):
-                cleaned.append(line)
-        return cleaned
+            stripped = line.strip()
+            if stripped and not stripped.startswith("#"):
+                flat.append(stripped)
+        return flat
 
     def _parse_entities(self, lines: list[str]) -> MapData:
         nb_drones: int | None = None
@@ -27,26 +29,28 @@ class Parser:
 
         for line in lines:
             try:
-                parts: list[str] = line.split(":", 1)
-                if parts[0] == "nb_drones":
-                    nb_drones = int(parts[1].strip())
-                elif parts[0] in ["hub", "start_hub", "end_hub"]:
-                    hub = self._parse_hub(parts[1].strip())
+                key, value = line.split(":", 1)
+                value = value.strip()
+
+                if key == "nb_drones":
+                    nb_drones = int(value)
+
+                elif key in ["hub", "start_hub", "end_hub"]:
+                    hub = self._parse_hub(value)
                     hubs[hub.name] = hub
-                    if parts[0] == "start_hub":
+                    if key == "start_hub":
                         start_hub = hub.name
-                    elif parts[0] == "end_hub":
+                    if key == "end_hub":
                         end_hub = hub.name
-                elif parts[0] == "connection":
-                    connections.append(
-                        self._parse_connection(parts[1].strip())
-                    )
+
+                elif key == "connection":
+                    connections.append(self._parse_connection(value))
                 else:
-                    raise ValueError(f"Unknown entity type: {parts[0]}")
+                    raise ValueError(f"Unknown entity type: {key}")
             except Exception as e:
                 raise ValueError(f"Invalid line: {line}") from e
 
-        if not nb_drones:
+        if nb_drones is None:
             raise ValueError("Missing nb_drones")
         if not hubs:
             raise ValueError("Missing hubs")
@@ -65,42 +69,34 @@ class Parser:
 
     def _parse_hub(self, data: str) -> Hub:
         parts = data.split(" ", 3)
-        metadata = {}
-        if len(parts) > 3:
-            metadata = self._parse_metadata(parts[3])
+        name, x, y = parts[:3]
+        metadata = self._parse_metadata(parts[3]) if len(parts) > 3 else {}
         try:
+            if "-" in name:
+                raise ValueError(f"Invalid hub name: {name}")
+
             hub = Hub(
-                name=parts[0].strip(),
-                x=int(parts[1].strip()),
-                y=int(parts[2].strip()),
+                name=name,
+                x=int(x),
+                y=int(y),
                 type=metadata.get("zone", ZoneType.NORMAL),
-                color=metadata.get("color", None),
-                max_drones=(
-                    int(metadata["max_drones"])
-                    if metadata.get("max_drones") is not None
-                    else None
-                )
+                color=metadata.get("color"),
+                max_drones=self._to_int(metadata.get("max_drones")),
             )
-            if "-" in hub.name:
-                raise ValueError(f"Invalid hub name: {hub.name}")
         except Exception as e:
             raise ValueError(f"Invalid hub data: {data}") from e
         return hub
 
     def _parse_connection(self, data: str) -> Connection:
         parts = data.split(" ", 2)
-        metadata = {}
-        if len(parts) > 1:
-            metadata = self._parse_metadata(parts[1])
+        hubs_part = parts[0].strip()
+        meta = self._parse_metadata(parts[1]) if len(parts) > 1 else {}
         try:
+            from_hub, to_hub = hubs_part.split("-")
             return Connection(
-                from_hub=parts[0].strip().split("-")[0],
-                to_hub=parts[0].strip().split("-")[1],
-                max_link_capacity=(
-                    int(metadata["max_link_capacity"])
-                    if metadata.get("max_link_capacity") is not None
-                    else None
-                )
+                from_hub=from_hub,
+                to_hub=to_hub,
+                max_link_capacity=self._to_int(meta.get("max_link_capacity")),
             )
         except Exception as e:
             raise ValueError(f"Invalid connection data: {data}") from e
@@ -109,7 +105,13 @@ class Parser:
     def _parse_metadata(data: str) -> dict[str, Any]:
         if not data:
             return {}
-        return {
-            k: v for k, v in
-            (item.split("=") for item in data.strip("[]").split(" "))
-        }
+    
+        return dict(
+            item.split("=", 1)
+            for item in data.strip("[]").split()
+            if "=" in item
+        )
+
+    @staticmethod
+    def _to_int(value):
+        return int(value) if value else None
