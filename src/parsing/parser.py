@@ -83,7 +83,7 @@ class Parser:
                 name=name,
                 x=int(x),
                 y=int(y),
-                type=self._parse_zone_t(metadata.get("zone")),
+                type=self._parse_zone_type(metadata.get("zone")),
                 color=self._parse_color(metadata.get("color")),
                 max_drones=self._to_int(metadata.get("max_drones")),
             )
@@ -130,7 +130,7 @@ class Parser:
             return arcade.color.WHITE
 
     @staticmethod
-    def _parse_zone_t(name: str | None) -> ZoneType:
+    def _parse_zone_type(name: str | None) -> ZoneType:
         if not name:
             return ZoneType.NORMAL
         try:
