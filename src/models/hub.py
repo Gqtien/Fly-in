@@ -12,13 +12,13 @@ class Hub:
         color: Color,
         max_drones: int | None = None,
     ):
-        self.name = name
-        self.x = x
-        self.y = y
-        self.type = type
-        self.color = color
-        self.max_drones = max_drones
-        self.drones = 0
+        self.name: str = name
+        self.x: int = x
+        self.y: int = y
+        self.type: ZoneType = type
+        self.color: Color = color
+        self.max_drones: int | None = max_drones
+        self.drones: int = 0
 
     def add_drone(self, amount: int = 1) -> bool:
         if self.max_drones is None or self.drones + amount <= self.max_drones:

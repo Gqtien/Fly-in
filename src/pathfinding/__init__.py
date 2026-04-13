@@ -1,3 +1,3 @@
-from .djikstra import Djikstra, PathType
+from .dijkstra import Dijkstra
 
-__all__ = ["Djikstra", "PathType"]
+__all__ = ["Dijkstra"]

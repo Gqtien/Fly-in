@@ -4,7 +4,6 @@ from tkinter import filedialog
 from parsing import Parser, Validator
 from simulation import Debugger
 from visualization import Viewer
-from pathfinding import Djikstra, PathType
 
 
 class Main:
@@ -36,8 +35,6 @@ class Main:
 
     def run(self) -> None:
         try:
-            self.path: PathType = Djikstra(self.data).find_path()
-            print(self.path)
             # Viewer(self.path)
             Viewer(self.data)
         except Exception as e:

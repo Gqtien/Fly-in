@@ -5,10 +5,10 @@ class Connection:
         to_hub: str,
         max_link_capacity: int | None = None,
     ):
-        self.from_hub = from_hub
-        self.to_hub = to_hub
-        self.max_link_capacity = max_link_capacity
-        self.drones = 0
+        self.from_hub: str = from_hub
+        self.to_hub: str = to_hub
+        self.max_link_capacity: int | None = max_link_capacity
+        self.drones: int = 0
 
     def add_drone(self) -> bool:
         if (
