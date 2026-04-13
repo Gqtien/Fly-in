@@ -11,6 +11,7 @@ class Parser:
             lines = f.readlines()
         lines = self._flatten(lines)
         data = self._parse_entities(lines)
+        data.hubs[data.start_hub].add_drone(data.nb_drones)
         Validator().validate(data)
         return data
 
