@@ -7,6 +7,7 @@ class Validator:
         self.validate_start_end(data)
         self.validate_hubs(data.hubs)
         self.validate_connections(data.hubs, data.connections)
+        self.validate_drones_amount(data.hubs, data.nb_drones)
 
     @staticmethod
     def validate_start_end(data: MapData) -> None:
@@ -37,7 +38,7 @@ class Validator:
     @staticmethod
     def validate_connections(
         hubs: dict[str, Hub],
-        connections: list[Connection]
+        connections: list[Connection],
     ) -> None:
         valid_hubs = set(hubs.keys())
         seen = set()
@@ -65,6 +66,15 @@ class Validator:
                 and conn.max_link_capacity <= 0
             ):
                 raise ValueError(f"Invalid capacity in connection {conn}")
+
+    @staticmethod
+    def validate_drones_amount(hubs: dict[str, Hub], nb_drones: int) -> None:
+        total_drones = sum(hub.drones for hub in hubs.values())
+        if total_drones != nb_drones:
+            raise ValueError(
+                f"Total drones ({total_drones}) "
+                f"does not match nb_drones ({nb_drones})"
+            )
 
     @staticmethod
     def validate_file_path(file_path: str) -> None:

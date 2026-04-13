@@ -1,10 +1,10 @@
-import arcade
+import arcade.color
 
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
 WINDOW_TITLE = "Fly-In"
 
-HUB_RADIUS = 25
+HUB_RADIUS = 100
 ZOOM_FACTOR = 1.1
 
 BG_COLOR = arcade.color.QUARTZ

@@ -1,0 +1,3 @@
+class Djikstra:
+    def __init__(self) -> None:
+        ...
