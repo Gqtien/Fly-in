@@ -1,3 +1,3 @@
-from .graph import Graph, GraphType
+from .graph import GraphBuilder, GraphType
 
-__all__ = ["Graph", "GraphType"]
+__all__ = ["GraphBuilder", "GraphType"]

@@ -1,16 +1,17 @@
 from models import MapData
-from typing import TypeAlias
 from collections import defaultdict
 
-GraphType: TypeAlias = dict[str, list[str]]
+GraphType = dict[str, list[tuple[str, float]]]
 
 
-class Graph:
+class GraphBuilder:
     @staticmethod
-    def map_to_graph(data: MapData) -> GraphType:
-        graph: defaultdict[str, list[str]] = defaultdict(list)
+    def build(data: MapData) -> GraphType:
+        graph: GraphType = defaultdict(list)
 
         for conn in data.connections:
-            graph[conn.from_hub].append(conn.to_hub)
+            graph[conn.from_hub].append(
+                (conn.to_hub, data.hubs[conn.to_hub].type.value)
+            )
 
         return dict(graph)
