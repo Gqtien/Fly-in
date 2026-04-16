@@ -8,13 +8,25 @@ from visualization import Renderer
 
 class Main:
     def __init__(self) -> None:
-        self.file_path: str = filedialog.askopenfilename(
-            title="Please select a map:",
-            initialdir=f"{os.getcwd()}/assets/maps",
-            filetypes=[("Maps", "*.txt")],
-        )
+        self.debug = "--debug" in sys.argv
+
+        self.prompt()
         self.parse()
         self.run()
+
+    def prompt(self) -> None:
+        maps_dir = f"{os.getcwd()}/assets/maps"
+        default_map = f"{maps_dir}/challenger/01_the_impossible_dream.txt"
+
+        self.file_path: str = (
+            filedialog.askopenfilename(
+                title="Please select a map:",
+                initialdir=maps_dir,
+                filetypes=[("Maps", "*.txt")],
+            )
+            if not self.debug
+            else default_map
+        )
 
     def parse(self) -> None:
         try:
@@ -26,18 +38,10 @@ class Main:
 
     def run(self) -> None:
         try:
-            simulator = Simulator(self.data)
-            movements: list[list[str]] = []
-
-            while not simulator.is_done():
-                movements.append(simulator.step())
-                print(" ".join(movements[-1]))
-
-            print(f"\nTotal turns: {len(movements)}")
             Renderer(
                 data=self.data,
-                movements=movements,
-                debug="--debug" in sys.argv,
+                movements=Simulator(self.data).simulate(),
+                debug=self.debug,
             )
         except Exception as e:
             print(f"Error displaying map: {e}")
