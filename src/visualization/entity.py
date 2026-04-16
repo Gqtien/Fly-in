@@ -8,10 +8,12 @@ class Entity:
     def car(
         model: str,
         texture: str,
-        pos: tuple[float, float, float] = (5, 0, 0),
+        pos: tuple[float, float, float] = (0, 0, 0),
         rot: tuple[float, float, float] = (0, 0, 0),
         scale: tuple[float, float, float] = (1.8, 1.8, 1.8),
     ) -> ur.Entity:
+        x, y, z = pos
+        pos = (x + 5, y + 0.1, z + 0.5)
         car = ur.Entity(
             model=model,
             texture=texture,
@@ -63,7 +65,7 @@ class Entity:
         color: ur.Color = ur.color.red,
     ) -> ur.Entity:
         x, y, z = pos
-        pos = (x + 5, y - 0.1, z + 0.3)
+        pos = (x + 5, y - 0.1, z - 4.7)
         hub = ur.Entity(
             model=Utils().ring(),
             color=color,

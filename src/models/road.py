@@ -2,7 +2,7 @@ from enum import Enum
 from typing import TypeAlias
 
 Coordinate: TypeAlias = tuple[float, float, float]
-RoadType: TypeAlias = tuple[Coordinate, Coordinate, Coordinate]
+RoadType: TypeAlias = tuple[Coordinate, Coordinate]
 
 
 class Road(Enum):
