@@ -1,3 +1,6 @@
+from .drone import Drone
+
+
 class Connection:
     def __init__(
         self,
@@ -8,25 +11,31 @@ class Connection:
         self.from_hub: str = from_hub
         self.to_hub: str = to_hub
         self.max_link_capacity: int | None = max_link_capacity
-        self.drones: int = 0
+        self.drones: list[Drone] = []
 
-    def add_drone(self) -> bool:
+    def has_capacity(self) -> bool:
+        return (
+            self.max_link_capacity is None
+            or len(self.drones) < self.max_link_capacity
+        )
+
+    def add_drone(self, drone: Drone) -> bool:
         if (
             self.max_link_capacity is None
-            or self.drones < self.max_link_capacity
-        ):
-            self.drones += 1
+            or len(self.drones) + 1 <= self.max_link_capacity
+        ) and drone not in self.drones:
+            self.drones.append(drone)
             return True
         return False
 
-    def remove_drone(self) -> bool:
-        if self.drones > 0:
-            self.drones -= 1
+    def remove_drone(self, drone: Drone) -> bool:
+        if drone in self.drones:
+            self.drones.remove(drone)
             return True
         return False
 
     def __str__(self) -> str:
         return (
             f"{self.from_hub} -> {self.to_hub} "
-            f"(drones: {self.drones}/{self.max_link_capacity})"
+            f"(drones: {len(self.drones)}/{self.max_link_capacity})"
         )

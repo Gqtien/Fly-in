@@ -2,7 +2,7 @@ import os
 import sys
 from tkinter import filedialog
 from parsing import Parser, Validator
-from simulation import Debugger
+from simulation import Simulator, Debugger
 from visualization import Viewer
 
 
@@ -35,8 +35,15 @@ class Main:
 
     def run(self) -> None:
         try:
-            # Viewer(self.path)
-            Viewer(self.data)
+            simulator = Simulator(self.data)
+            movements: list[list[str]] = []
+
+            while not simulator.is_done():
+                movements.append(simulator.step())
+                print(" ".join(movements[-1]))
+
+            print(f"\nTotal turns: {len(movements)}")
+            Viewer(self.data, movements)
         except Exception as e:
             print(f"Error displaying map: {e}")
             exit(1)
