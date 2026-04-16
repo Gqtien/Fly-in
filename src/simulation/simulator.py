@@ -1,11 +1,12 @@
 from graph import GraphBuilder, GraphType
 from models import Drone, DroneStatus, MapData, Connection, ZoneType
 from .scheduler import Scheduler
+import copy
 
 
 class Simulator:
     def __init__(self, data: MapData) -> None:
-        self.data: MapData = data
+        self.data: MapData = copy.deepcopy(data)
         self.graph: GraphType = GraphBuilder.build(self.data)
         self.scheduler: Scheduler = Scheduler(self.graph)
 
