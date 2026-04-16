@@ -2,8 +2,8 @@ import os
 import sys
 from tkinter import filedialog
 from parsing import Parser, Validator
-from simulation import Simulator, Debugger
-from visualization import Viewer
+from simulation import Simulator
+from visualization import Renderer
 
 
 class Main:
@@ -14,8 +14,6 @@ class Main:
             filetypes=[("Maps", "*.txt")],
         )
         self.parse()
-        if "--debug" in sys.argv:
-            self.debug()
         self.run()
 
     def parse(self) -> None:
@@ -24,13 +22,6 @@ class Main:
             self.data = Parser().parse(self.file_path)
         except Exception as e:
             print(f"Error parsing map: {e}")
-            exit(1)
-
-    def debug(self) -> None:
-        try:
-            Debugger()
-        except Exception as e:
-            print(f"Error starting debugger: {e}")
             exit(1)
 
     def run(self) -> None:
@@ -43,7 +34,11 @@ class Main:
                 print(" ".join(movements[-1]))
 
             print(f"\nTotal turns: {len(movements)}")
-            Viewer(self.data, movements)
+            Renderer(
+                data=self.data,
+                movements=movements,
+                debug="--debug" in sys.argv,
+            )
         except Exception as e:
             print(f"Error displaying map: {e}")
             exit(1)

@@ -1,9 +1,8 @@
 from typing import Any, cast
-import arcade
-from arcade.types import Color
 from models import Connection, Hub, MapData, ZoneType
 from models.drone import Drone
 from .validator import Validator
+import ursina as ur
 
 
 class Parser:
@@ -126,13 +125,13 @@ class Parser:
         return int(value) if value else None
 
     @staticmethod
-    def _parse_color(name: str | None) -> Color:
+    def _parse_color(name: str | None) -> ur.Color:
         if not name:
-            return arcade.color.WHITE
+            return ur.color.white
         try:
-            return cast(Color, getattr(arcade.color, name.upper()))
+            return cast(ur.Color, getattr(ur.color, name.lower()))
         except AttributeError:
-            return arcade.color.WHITE
+            return ur.color.white  # ur.color.clear to catch unknown colors
 
     @staticmethod
     def _parse_zone_type(name: str | None) -> ZoneType:
