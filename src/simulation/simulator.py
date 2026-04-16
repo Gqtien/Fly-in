@@ -9,6 +9,19 @@ class Simulator:
         self.graph: GraphType = GraphBuilder.build(self.data)
         self.scheduler: Scheduler = Scheduler(self.graph)
 
+    def simulate(self) -> list[list[str]]:
+        movements: list[list[str]] = []
+
+        while not self.is_done():
+            movements.append(self.step())
+            print(" ".join(movements[-1]))
+
+        print()
+        print(f"Total turns: {len(movements)}")
+        print()
+
+        return movements
+
     def step(self) -> list[str]:
         idle_count = sum(
             1
