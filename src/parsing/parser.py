@@ -2,6 +2,7 @@ from typing import Any, cast
 import arcade
 from arcade.types import Color
 from models import Connection, Hub, MapData, ZoneType
+from models.drone import Drone
 from .validator import Validator
 
 
@@ -11,7 +12,6 @@ class Parser:
             lines = f.readlines()
         lines = self._flatten(lines)
         data = self._parse_entities(lines)
-        data.hubs[data.start_hub].add_drone(data.nb_drones)
         Validator().validate(data)
         return data
 
@@ -63,12 +63,17 @@ class Parser:
         if not end_hub:
             raise ValueError("Missing end_hub")
 
+        drones = [Drone(id=i, position=start_hub) for i in range(nb_drones)]
+        for drone in drones:
+            hubs[start_hub].add_drone(drone)
+
         return MapData(
             nb_drones=nb_drones,
             hubs=hubs,
             start_hub=start_hub,
             end_hub=end_hub,
             connections=connections,
+            drones=drones,
         )
 
     def _parse_hub(self, data: str) -> Hub:

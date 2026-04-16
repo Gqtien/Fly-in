@@ -5,9 +5,11 @@ from .config import BG_COLOR, HUB_RADIUS, ZONE_COLORS, ZOOM_FACTOR
 
 
 class Renderer(arcade.View):
-    def __init__(self, data: MapData):
+    def __init__(self, data: MapData, movements: list[list[str]]):
         super().__init__()
         self.data = data
+        self.movements = movements
+        self.total = len(movements)
         self.dragging = False
         self.scale = HUB_RADIUS * 1.5
         self.shape_list: sl.ShapeElementList = sl.ShapeElementList()
@@ -41,7 +43,7 @@ class Renderer(arcade.View):
             self.shape_list.append(
                 sl.create_line(ax, ay, bx, by, arcade.color.WHITE, 4)
             )
-            if conn.drones > 0:
+            if len(conn.drones) > 0:
                 self.text_cache.append(
                     arcade.Text(
                         str(conn.drones),
@@ -71,10 +73,10 @@ class Renderer(arcade.View):
                     HUB_RADIUS / 4,
                 )
             )
-            if hub.drones > 0:
+            if len(hub.drones) > 0:
                 self.text_cache.append(
                     arcade.Text(
-                        str(hub.drones),
+                        str(len(hub.drones)),
                         x,
                         y,
                         act,

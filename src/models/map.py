@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from .drone import Drone
 from .connection import Connection
 from .hub import Hub
 
@@ -10,3 +11,4 @@ class MapData:
     end_hub: str
     hubs: dict[str, Hub]
     connections: list[Connection]
+    drones: list[Drone]

@@ -1,14 +1,19 @@
 from graph import GraphType
+from typing import TypeAlias
+
+DijkstraType: TypeAlias = tuple[dict[str, float], dict[str, str | None]]
 
 
 class Dijkstra:
-    @staticmethod
+    def __init__(self, graph: GraphType):
+        self.graph = graph
+
     def run(
-        graph: GraphType,
+        self,
         start: str,
-    ) -> tuple[dict[str, float], dict[str, str | None]]:
-        nodes = set(graph.keys())
-        for edges in graph.values():
+    ) -> DijkstraType:
+        nodes = set(self.graph.keys())
+        for edges in self.graph.values():
             for v, _ in edges:
                 nodes.add(v)
 
@@ -32,7 +37,7 @@ class Dijkstra:
 
             visited.add(current)
 
-            for neighbor, w in graph.get(current, []):
+            for neighbor, w in self.graph.get(current, []):
                 if neighbor in visited:
                     continue
 
@@ -44,19 +49,19 @@ class Dijkstra:
 
         return dist, prev
 
+    @staticmethod
+    def reconstruct(
+        prev: dict[str, str | None],
+        start: str,
+        end: str,
+    ) -> list[str]:
+        path: list[str] = []
+        cur: str | None = end
 
-def reconstruct(
-    prev: dict[str, str | None],
-    start: str,
-    end: str,
-) -> list[str]:
-    path: list[str] = []
-    cur: str | None = end
+        while cur is not None:
+            path.append(cur)
+            if cur == start:
+                break
+            cur = prev[cur]
 
-    while cur is not None:
-        path.append(cur)
-        if cur == start:
-            break
-        cur = prev[cur]
-
-    return path[::-1] if path[-1] == start else []
+        return path[::-1] if path[-1] == start else []

@@ -50,7 +50,7 @@ define ensure_env
 	fi
 	@if [ ! -f "$(DEPSFLAG)" ]; then \
 	    echo "Checking dependencies..."; \
-	    missing=$$(for pkg in $(DEPS) mlx; do \
+	    missing=$$(for pkg in $(DEPS); do \
 	        $(BIN)/pip list --format=freeze | grep -i "^$${pkg}==" >/dev/null || echo $$pkg; \
 	    done); \
 	    if [ -n "$$missing" ]; then \

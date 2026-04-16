@@ -69,7 +69,7 @@ class Validator:
 
     @staticmethod
     def validate_drones_amount(hubs: dict[str, Hub], nb_drones: int) -> None:
-        total_drones = sum(hub.drones for hub in hubs.values())
+        total_drones = sum(len(hub.drones) for hub in hubs.values())
         if total_drones != nb_drones:
             raise ValueError(
                 f"Total drones ({total_drones}) "
