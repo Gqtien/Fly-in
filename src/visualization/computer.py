@@ -12,3 +12,6 @@ class Computer:
         for _, hub in self.data.hubs.items():
             ...
         return roads
+
+    def compute_camera_pos(self) -> tuple[float, float, float]:
+        return (10, 10, 10)
