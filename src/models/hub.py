@@ -1,4 +1,4 @@
-from arcade.types import Color
+from ursina import Color
 from .drone import Drone
 from .zone import ZoneType
 

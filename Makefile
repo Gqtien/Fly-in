@@ -5,7 +5,7 @@ UV			:= uv
 
 MAKEFLAGS	:= --no-print-directory
 
-DEPS		:= arcade
+DEPS		:= ursina
 DEPSFLAG	:= $(VENV_DIR)/.installed
 
 run:
