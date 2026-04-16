@@ -10,6 +10,9 @@ class Controller(ur.Entity):
         self.computer = Computer(self.data)
         self.cam_pos = self.computer.compute_camera_pos()
 
+    def update(self) -> None:
+        ...
+
     def input(self, key: str) -> None:
         match key:
             case "escape":

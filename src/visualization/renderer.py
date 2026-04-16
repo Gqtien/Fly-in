@@ -16,10 +16,10 @@ class Renderer:
         self.debug: bool = debug
 
         self.computer: Computer = Computer(data)
-        self.controller: Controller = Controller(data)
 
         self.setup()
         self.render()
+        Controller(data)
         self.app.run()
 
     def setup(self) -> None:
@@ -30,8 +30,8 @@ class Renderer:
         ur.application.base.camLens.setNearFar(1, 9e10)
         ur.EditorCamera()
         self.entity: Entity = Entity()
-        Entity.floor()
-        Entity.sky()
+        self.entity.floor()
+        self.entity.sky()
 
     def render(self) -> None:
         self.spawn_roads()
@@ -46,12 +46,15 @@ class Renderer:
             self.entity.road(type.value, pos, rot, scale)
 
     def spawn_cars(self) -> None:
-        self.entity.car(
-            model="taxi.dae",
-            texture="taxi_texture.jpg",
-            pos=(5, 0.01, 0),
-            scale=(1.8, 1.8, 1.8),
-        )
+        self.cars: dict[int, ur.Entity] = {}
+        for drone in self.data.hubs[self.data.start_hub].drones:
+            car = self.entity.car(
+                model="taxi.dae",
+                texture="taxi_texture.jpg",
+                pos=(5, 0.01, 0),
+                scale=(1.8, 1.8, 1.8),
+            )
+            self.cars[drone.id] = car
 
     def spawn_hubs(self) -> None:
         for _, hub in self.data.hubs.items():
@@ -68,6 +71,6 @@ class Renderer:
             scale=0.75,
             font="Satoshi-Medium.otf",
         )
-    
+
         label.x = round(-ur.window.aspect_ratio / 2 + label.width / 2, 3)
         label.y = round(0.48, 3)
