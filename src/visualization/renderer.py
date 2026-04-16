@@ -42,8 +42,8 @@ class Renderer:
     def spawn_roads(self) -> None:
         roads: dict[RoadType, Road] = self.computer.compute_roads_pos()
         for place, type in roads.items():
-            pos, rot, scale = place
-            self.entity.road(type.value, pos, rot, scale)
+            pos, rot = place
+            self.entity.road(type.value, pos, rot)
 
     def spawn_cars(self) -> None:
         self.cars: dict[int, ur.Entity] = {}
@@ -51,7 +51,11 @@ class Renderer:
             car = self.entity.car(
                 model="taxi.dae",
                 texture="taxi_texture.jpg",
-                pos=(5, 0.01, 0),
+                pos=(
+                    self.data.hubs[drone.position].y * 20,
+                    0,
+                    -(self.data.hubs[drone.position].x * 20 + 5),
+                ),
                 scale=(1.8, 1.8, 1.8),
             )
             self.cars[drone.id] = car
