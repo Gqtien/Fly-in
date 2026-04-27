@@ -13,13 +13,12 @@ class Simulator:
     def simulate(self) -> list[list[str]]:
         movements: list[list[str]] = []
 
-        while not self.is_done():
-            movements.append(self.step())
-            print(" ".join(movements[-1]))
+        with open("out.txt", "w") as f:
+            while not self.is_done():
+                movements.append(self.step())
+                f.write(" ".join(movements[-1]) + "\n")
 
-        print()
-        print(f"Total turns: {len(movements)}")
-        print()
+            f.write(f"\nTotal turns: {len(movements)}\n")
 
         return movements
 
