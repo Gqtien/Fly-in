@@ -3,7 +3,7 @@ from .hub import Hub
 from .connection import Connection
 from .drone import Drone, DroneStatus
 from .zone import ZoneType
-from .road import Road, RoadType
+from .geometry import HubGeometry, RoadGeometry
 
 
 __all__ = [
@@ -13,6 +13,6 @@ __all__ = [
     "Drone",
     "DroneStatus",
     "ZoneType",
-    "Road",
-    "RoadType",
+    "HubGeometry",
+    "RoadGeometry"
 ]

@@ -214,3 +214,4 @@ __marimo__/
 .zed
 *.prof
 .pyscn/
+out.txt
