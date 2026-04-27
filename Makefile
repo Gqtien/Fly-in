@@ -1,63 +1,27 @@
-PYTHON		?= python3
-VENV_DIR	?= .venv
-BIN			:= $(VENV_DIR)/bin
-UV			:= uv
+VENV := .venv
+PY   := $(VENV)/bin/python
 
-MAKEFLAGS	:= --no-print-directory
+run: $(VENV)
+	@$(PY) src/fly_in.py
 
-DEPS		:= ursina
-DEPSFLAG	:= $(VENV_DIR)/.installed
+debug: $(VENV)
+	@$(PY) src/fly_in.py --debug
 
-run:
-	$(ensure_env)
-	@$(BIN)/$(PYTHON) src/fly_in.py || true
+install $(VENV):
+	@uv venv $(VENV)
+	@uv pip install ursina flake8 mypy
 
-install:
-	@$(MAKE) clean
-	@$(UV) venv $(VENV_DIR)
-	@$(UV) pip install --upgrade pip --quiet
-	@$(UV) pip install $(DEPS) --quiet
-	@$(UV) pip install flake8 mypy --quiet
-	@touch $(DEPSFLAG)
-	@echo "Everything has been installed."
-	@echo "You can now run 'make'"
+lint: $(VENV)
+	-@$(PY) -m flake8 src
+	-@$(PY) -m mypy src --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
 
-debug:
-	$(ensure_env)
-	@$(BIN)/$(PYTHON) src/fly_in.py --debug || true
+lint-strict: $(VENV)
+	-@$(PY) -m flake8 src
+	-@$(PY) -m mypy src --ignore-missing-imports --allow-subclassing-any --strict
 
 clean:
-	@rm -rf $(VENV_DIR)
-	@find . -type d -name "__pycache__" -exec rm -rf {} +
-	@find . -type d -name ".mypy_cache" -exec rm -rf {} +
-	@find . -type d -name ".pytest_cache" -exec rm -rf {} +
-	@rm -f profile.prof $(DEPSFLAG)
+	@rm -rf $(VENV)
+	@find . -type d \( -name __pycache__ -o -name .mypy_cache -o -name .pytest_cache \) -exec rm -rf {} +
+	@rm -f out.txt
 
-lint:
-	$(ensure_env)
-	@$(BIN)/$(PYTHON) -m flake8 src || true
-	@$(BIN)/$(PYTHON) -m mypy src --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs || true
-
-lint-strict:
-	$(ensure_env)
-	@$(BIN)/$(PYTHON) -m flake8 src || true
-	@$(BIN)/$(PYTHON) -m mypy src --strict || true
-
-define ensure_env
-	@if [ ! -x "$(BIN)/python" -o ! -x "$(BIN)/pip" ]; then \
-	    echo "Virtual environment not found. Installing..."; \
-	    $(MAKE) install > /dev/null 2>&1; \
-	fi
-	@if [ ! -f "$(DEPSFLAG)" ]; then \
-	    echo "Checking dependencies..."; \
-	    missing=$$(for pkg in $(DEPS); do \
-	        $(BIN)/pip list --format=freeze | grep -i "^$${pkg}==" >/dev/null || echo $$pkg; \
-	    done); \
-	    if [ -n "$$missing" ]; then \
-	        echo "Missing dependencies: $$missing. Installing..."; \
-	        $(MAKE) install > /dev/null 2>&1; \
-	    fi; \
-	fi
-endef
-
-.PHONY: run install debug clean lint lint-strict
+.PHONY: run debug install lint lint-strict clean
