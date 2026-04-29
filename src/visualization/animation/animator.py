@@ -212,4 +212,4 @@ class Animator(ur.Entity):
     ) -> float:
         dx = to_world[0] - from_world[0]
         dz = to_world[2] - from_world[2]
-        return math.degrees(math.atan2(dx, dz))
+        return math.degrees(math.atan2(-dx, -dz))
