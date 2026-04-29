@@ -1,9 +1,9 @@
 from pathlib import Path
 import ursina as ur
-from models import MapData
+from models import MapData, ZoneType
 from .animation import Animator
 from .mesh import RoadMeshBuilder
-from .scene import Camera, Controller, Entity, Hud
+from .scene import Camera, Controller, Entity, Hud, Stacker
 from .utils import Utils
 
 
@@ -43,6 +43,7 @@ class Renderer:
             self.movements,
             self.cars,
         )
+        Stacker(self.cars)
         Hud(self.animator)
 
     def spawn_roads(self) -> None:
@@ -53,11 +54,13 @@ class Renderer:
             self.entity.asphalt(hub_geom.asphalt, hub_geom.position)
             self.entity.marker(hub_geom.marker, hub_geom.position)
         for c in self.data.connections:
-            road_geom = builder.build_road(
-                self.data.hubs[c.from_hub], self.data.hubs[c.to_hub]
-            )
+            from_hub = self.data.hubs[c.from_hub]
+            to_hub = self.data.hubs[c.to_hub]
+            road_geom = builder.build_road(from_hub, to_hub)
             self.entity.border(road_geom.borders)
             self.entity.asphalt(road_geom.asphalt)
+            if to_hub.type == ZoneType.RESTRICTED:
+                self.entity.marker(builder.build_stop_line(from_hub, to_hub))
 
     def spawn_cars(self) -> None:
         self.cars: dict[int, ur.Entity] = {}

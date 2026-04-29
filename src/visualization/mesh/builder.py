@@ -64,6 +64,41 @@ class RoadMeshBuilder:
             a_world, a_world + handle, b_world - handle, b_world
         )
 
+    def build_stop_line(self, a: Hub, b: Hub) -> ur.Mesh:
+        a_world = ur.Vec3(*Utils.hub_world_pos(a))
+        b_world = ur.Vec3(*Utils.hub_world_pos(b))
+        handle = (b_world - a_world) / 3.0
+        p0, p1, p2, p3 = (
+            a_world, a_world + handle, b_world - handle, b_world,
+        )
+        center = self.bezier(p0, p1, p2, p3, 0.5)
+        tan = self.normalised(self.bezier_tangent(p0, p1, p2, p3, 0.5))
+        right = self.normalised(self.right_of(tan))
+        hw = self.config.half_asphalt
+        ht = self.config.stop_line_thickness / 2
+        up = ur.Vec3(
+            0, self.config.border_height + self.config.stop_line_lift, 0,
+        )
+        n = self.config.stop_line_dashes
+        slot = (2 * hw) / n
+        dash_half = slot * self.config.stop_line_dash_ratio / 2
+        buffer = MeshBuffer()
+        for i in range(n):
+            offset = -hw + (i + 0.5) * slot
+            c = center + right * offset + up
+            base = len(buffer.vertices)
+            buffer.vertices += [
+                c + right * dash_half - tan * ht,
+                c + right * dash_half + tan * ht,
+                c - right * dash_half - tan * ht,
+                c - right * dash_half + tan * ht,
+            ]
+            buffer.triangles += [
+                (base, base + 1, base + 3),
+                (base, base + 3, base + 2),
+            ]
+        return buffer.to_mesh()
+
     def extrude_ribbon(
         self, p0: ur.Vec3, p1: ur.Vec3, p2: ur.Vec3, p3: ur.Vec3
     ) -> RoadGeometry:
