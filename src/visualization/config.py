@@ -16,6 +16,10 @@ class RoadConfig:
     hub_marker_height: float = 0.3
     hub_marker_radius_ratio: float = 0.5
     hub_marker_bottom_shade: float = 0.4
+    stop_line_thickness: float = 1.0
+    stop_line_lift: float = 0.05
+    stop_line_dashes: int = 5
+    stop_line_dash_ratio: float = 0.5
 
     @property
     def half_asphalt(self) -> float:
@@ -52,3 +56,16 @@ class HudConfig:
     scale: float = 1.0
     margin: float = 0.025
     color: ur.Color = ur.color.white
+
+
+@dataclass(frozen=True)
+class StackerConfig:
+    font: str = "noot.regular.ttf"
+    text_scale: float = 50.0
+    text_color: ur.Color = ur.color.white
+    plate_color: ur.Color = ur.color.black66
+    plate_radius: float = 0.3
+    plate_padding: tuple[float, float] = (0.03, 0.01)
+    height_offset: float = 6
+    cluster_eps: float = 0.05
+    min_count: int = 2
