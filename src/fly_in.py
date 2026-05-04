@@ -2,14 +2,17 @@ import os
 import sys
 from tkinter import filedialog
 from parsing import Parser, Validator
-from simulation import Simulator
+from simulation import Simulator, Benchmark
 from visualization import Renderer
 
 
 class Main:
     def __init__(self) -> None:
         self.debug = "--debug" in sys.argv
+        self.bench = "--benchmark" in sys.argv
 
+        if self.bench:
+            self.benchmark()
         self.prompt()
         self.parse()
         self.run()
@@ -27,6 +30,14 @@ class Main:
             if not self.debug
             else default_map
         )
+
+    def benchmark(self) -> None:
+        try:
+            Benchmark()
+            exit(0)
+        except Exception as e:
+            print(f"Error during benchmark: {e}")
+            exit(1)
 
     def parse(self) -> None:
         try:

@@ -215,3 +215,4 @@ __marimo__/
 *.prof
 .pyscn/
 out.txt
+bench.txt

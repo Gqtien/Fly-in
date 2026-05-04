@@ -7,6 +7,9 @@ run: $(VENV)
 debug: $(VENV)
 	@$(PY) src/fly_in.py --debug
 
+bench: $(VENV)
+	@$(PY) src/fly_in.py --benchmark
+
 install $(VENV):
 	@uv venv $(VENV)
 	@uv pip install ursina flake8 mypy
@@ -22,6 +25,6 @@ lint-strict: $(VENV)
 clean:
 	@rm -rf $(VENV)
 	@find . -type d \( -name __pycache__ -o -name .mypy_cache -o -name .pytest_cache \) -exec rm -rf {} +
-	@rm -f out.txt
+	@rm -f out.txt bench.txt
 
 .PHONY: run debug install lint lint-strict clean
