@@ -1,7 +1,7 @@
 import os
 import sys
 from tkinter import filedialog
-from parsing import Parser, Validator
+from parsing import Parser
 from simulation import Simulator, Benchmark
 from visualization import Renderer
 
@@ -41,7 +41,6 @@ class Main:
 
     def parse(self) -> None:
         try:
-            Validator().validate_file_path(self.file_path)
             self.data = Parser().parse(self.file_path)
         except Exception as e:
             print(f"Error parsing map: {e}")

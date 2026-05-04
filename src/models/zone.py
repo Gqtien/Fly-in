@@ -2,10 +2,10 @@ from enum import Enum
 
 
 class ZoneType(Enum):
-    BLOCKED = 0
-    RESTRICTED = 1
-    NORMAL = 2
-    PRIORITY = 3
+    BLOCKED = "blocked"
+    RESTRICTED = "restricted"
+    NORMAL = "normal"
+    PRIORITY = "priority"
 
     @property
     def weight(self) -> float:

@@ -12,7 +12,7 @@ bench: $(VENV)
 
 install $(VENV):
 	@uv venv $(VENV)
-	@uv pip install ursina flake8 mypy
+	@uv pip install ursina pydantic flake8 mypy
 
 lint: $(VENV)
 	-@$(PY) -m flake8 src
