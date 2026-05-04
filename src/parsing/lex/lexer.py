@@ -104,7 +104,7 @@ class Lexer:
         if size > Limits.max_file_size:
             raise MapError("file is too heavy")
         try:
-            return p.read_text(encoding="utf-8", errors="strict")
+            return p.read_text(encoding="utf-8-sig", errors="strict")
         except Exception as e:
             raise MapError(f"Error reading file: {e}") from e
 
