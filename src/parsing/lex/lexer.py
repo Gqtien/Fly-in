@@ -46,6 +46,13 @@ class Lexer:
                         line,
                     )
                 nb_drones = self.parse_int(value, line_no, line)
+                if nb_drones < 1 or nb_drones > Limits.max_nb_drones:
+                    raise MapError(
+                        f"nb_drones must be between 1 and "
+                        f"{Limits.max_nb_drones}",
+                        line_no,
+                        line,
+                    )
             elif prefix == "start_hub":
                 if start_hub is not None:
                     raise MapError(
