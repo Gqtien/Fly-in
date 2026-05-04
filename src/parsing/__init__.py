@@ -1,4 +1,7 @@
 from .parser import Parser
-from .validator import Validator
+from .errors import MapError
 
-__all__ = ["Parser", "Validator"]
+__all__ = [
+    "Parser",
+    "MapError",
+]

@@ -1,17 +1,33 @@
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    PositiveInt,
+    model_validator,
+)
 from .drone import Drone
+from .hub import HubName
 
 
-class Connection:
-    def __init__(
-        self,
-        from_hub: str,
-        to_hub: str,
-        max_link_capacity: int | None = None,
-    ):
-        self.from_hub: str = from_hub
-        self.to_hub: str = to_hub
-        self.max_link_capacity: int | None = max_link_capacity
-        self.drones: list[Drone] = []
+class Connection(BaseModel):
+    model_config = ConfigDict(
+        arbitrary_types_allowed=True,
+        extra="forbid",
+        populate_by_name=True,
+    )
+
+    from_hub: HubName = Field(alias="a")
+    to_hub: HubName = Field(alias="b")
+    max_link_capacity: PositiveInt | None = None
+    drones: list[Drone] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def reject_self_loop(self) -> "Connection":
+        if self.from_hub == self.to_hub:
+            raise ValueError(
+                f"connection cannot loop on '{self.from_hub}'"
+            )
+        return self
 
     def has_capacity(self) -> bool:
         return (
@@ -35,7 +51,12 @@ class Connection:
         return False
 
     def __str__(self) -> str:
+        cap = (
+            self.max_link_capacity
+            if self.max_link_capacity is not None
+            else "∞"
+        )
         return (
             f"{self.from_hub} -> {self.to_hub} "
-            f"(drones: {len(self.drones)}/{self.max_link_capacity})"
+            f"(drones: {len(self.drones)}/{cap})"
         )
