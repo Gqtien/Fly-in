@@ -71,8 +71,9 @@ class RoadMeshBuilder:
         p0, p1, p2, p3 = (
             a_world, a_world + handle, b_world - handle, b_world,
         )
-        center = self.bezier(p0, p1, p2, p3, 0.5)
-        tan = self.normalised(self.bezier_tangent(p0, p1, p2, p3, 0.5))
+        t = self.config.stop_line_position
+        center = self.bezier(p0, p1, p2, p3, t)
+        tan = self.normalised(self.bezier_tangent(p0, p1, p2, p3, t))
         right = self.normalised(self.right_of(tan))
         hw = self.config.half_asphalt
         ht = self.config.stop_line_thickness / 2

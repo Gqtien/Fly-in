@@ -68,5 +68,5 @@ class Trajectory:
         return (
             world[0],
             world[1] + self.config.car_lift,
-            world[2] + self.config.car_z_offset,
+            world[2],
         )
