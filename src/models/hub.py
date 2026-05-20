@@ -35,7 +35,8 @@ class Hub(BaseModel):
     y: int
     type: ZoneType = Field(default=ZoneType.NORMAL, alias="zone")
     color: Color = Field(default_factory=lambda: ur_color.white)
-    max_drones: PositiveInt | None = None
+    max_drones: PositiveInt = 1
+    is_endpoint: bool = False
     drones: list[Drone] = Field(default_factory=list)
 
     @field_validator("color", mode="before")
@@ -54,19 +55,15 @@ class Hub(BaseModel):
         return getattr(ur_color, v.lower(), ur_color.white)
 
     def has_capacity(self) -> bool:
-        return (
-            self.max_drones is None
-            or len(self.drones) < self.max_drones
-        )
+        return self.is_endpoint or len(self.drones) < self.max_drones
 
     def add_drone(self, drone: Drone) -> bool:
-        if (
-            self.max_drones is None
-            or len(self.drones) + 1 <= self.max_drones
-        ) and drone not in self.drones:
-            self.drones.append(drone)
-            return True
-        return False
+        if drone in self.drones:
+            return False
+        if not self.is_endpoint and len(self.drones) >= self.max_drones:
+            return False
+        self.drones.append(drone)
+        return True
 
     def remove_drone(self, drone: Drone) -> bool:
         if drone in self.drones:
@@ -75,5 +72,5 @@ class Hub(BaseModel):
         return False
 
     def __str__(self) -> str:
-        cap = self.max_drones if self.max_drones is not None else "∞"
+        cap = "∞" if self.is_endpoint else str(self.max_drones)
         return f"{self.name} (drones: {len(self.drones)}/{cap})"

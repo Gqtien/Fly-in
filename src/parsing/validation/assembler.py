@@ -12,6 +12,8 @@ class Assembler:
     def assemble(self, result: LexResult) -> MapData:
         start = self.build_hub(*result.start_hub)
         end = self.build_hub(*result.end_hub)
+        start.is_endpoint = True
+        end.is_endpoint = True
         hubs = self.build_hubs(result.hubs, [start, end])
         connections = self.build_connections(result.connections)
         drones = [

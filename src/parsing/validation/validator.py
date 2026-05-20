@@ -1,5 +1,5 @@
 from collections import deque
-from models import Hub, MapData, ZoneType
+from models import MapData, ZoneType
 from ..errors import MapError
 
 
@@ -7,7 +7,6 @@ class GraphValidator:
     def validate(self, data: MapData) -> None:
         self.check_endpoints(data)
         self.check_blocked_endpoints(data)
-        self.check_capacities(data)
         self.check_unique_coordinates(data)
         self.check_connection_endpoints(data)
         self.check_reachability(data)
@@ -27,31 +26,6 @@ class GraphValidator:
             raise MapError("start_hub cannot be a blocked zone")
         if data.hubs[data.end_hub].type == ZoneType.BLOCKED:
             raise MapError("end_hub cannot be a blocked zone")
-
-    @staticmethod
-    def check_capacities(data: MapData) -> None:
-        GraphValidator.check_capacity_sufficient(
-            data.hubs[data.start_hub],
-            "start_hub",
-            data.nb_drones,
-        )
-        GraphValidator.check_capacity_sufficient(
-            data.hubs[data.end_hub],
-            "end_hub",
-            data.nb_drones,
-        )
-
-    @staticmethod
-    def check_capacity_sufficient(
-        hub: Hub,
-        role: str,
-        nb_drones: int,
-    ) -> None:
-        if hub.max_drones is not None and hub.max_drones < nb_drones:
-            raise MapError(
-                f"{role} '{hub.name}' max_drones ({hub.max_drones}) "
-                f"is below nb_drones ({nb_drones})"
-            )
 
     @staticmethod
     def check_unique_coordinates(data: MapData) -> None:
