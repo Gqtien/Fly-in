@@ -20,6 +20,7 @@ class RoadConfig:
     stop_line_lift: float = 0.05
     stop_line_dashes: int = 5
     stop_line_dash_ratio: float = 0.5
+    stop_line_position: float = 0.53
 
     @property
     def half_asphalt(self) -> float:
@@ -47,7 +48,6 @@ class AnimationConfig:
     alignment_end: float = 0.15
     arrival_start: float = 0.75
     car_lift: float = 0.7
-    car_z_offset: float = -1.0
 
 
 @dataclass(frozen=True)
@@ -69,3 +69,15 @@ class StackerConfig:
     height_offset: float = 6
     cluster_eps: float = 0.05
     min_count: int = 2
+
+
+@dataclass(frozen=True)
+class TagConfig:
+    font: str = "noot.regular.ttf"
+    text_scale: float = 100.0
+    text_color: ur.Color = ur.color.white
+    accent_text_color: ur.Color = ur.color.light_gray
+    shadow_color: ur.Color = ur.color.dark_gray
+    shadow_offset: tuple[float, float] = (0.06, 0.06)
+    height_offset: float = 1.05
+    unlimited_text: str = ""

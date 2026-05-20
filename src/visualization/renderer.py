@@ -3,7 +3,7 @@ import ursina as ur
 from models import MapData, ZoneType
 from .animation import Animator
 from .mesh import RoadMeshBuilder
-from .scene import Camera, Controller, Entity, Hud, Stacker
+from .scene import Camera, Controller, Entity, Hud, Stacker, Tag
 from .utils import Utils
 
 
@@ -44,6 +44,7 @@ class Renderer:
             self.cars,
         )
         Stacker(self.cars)
+        Tag(self.data.hubs)
         Hud(self.animator)
 
     def spawn_roads(self) -> None:
