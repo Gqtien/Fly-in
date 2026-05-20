@@ -28,4 +28,4 @@ clean:
 	@find . -type d \( -name __pycache__ -o -name .mypy_cache -o -name .pytest_cache \) -exec rm -rf {} +
 	@rm -f out.txt bench.txt
 
-.PHONY: run debug install lint lint-strict clean
+.PHONY: run debug bench install lint lint-strict clean

@@ -13,9 +13,9 @@ class HubTag(ur.Entity):
         x, _, z = Utils.hub_world_pos(hub)
         self.position = (x, config.height_offset, z)
 
-        if hub.type is ZoneType.BLOCKED or hub.max_drones == "0":
+        if hub.type is ZoneType.BLOCKED:
             text = "X"
-        elif hub.max_drones is None:
+        elif hub.is_endpoint:
             text = config.unlimited_text
         else:
             text = str(hub.max_drones)
@@ -30,7 +30,9 @@ class HubTag(ur.Entity):
             color=config.shadow_color,
             position=(sx, -sy, 0.01),
         )
-        self.shadow_label.setAttrib(DepthWriteAttrib.make(DepthWriteAttrib.M_off))
+        self.shadow_label.setAttrib(
+            DepthWriteAttrib.make(DepthWriteAttrib.M_off)
+        )
         self.shadow_label.setBin("fixed", 19)
 
         self.label: ur.Text = ur.Text(
