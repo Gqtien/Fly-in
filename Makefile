@@ -9,6 +9,7 @@ debug: $(VENV)
 
 bench: $(VENV)
 	@$(PY) src/fly_in.py --benchmark
+	@echo "Benchmark results saved to bench.txt"
 
 install $(VENV):
 	@uv venv $(VENV)
